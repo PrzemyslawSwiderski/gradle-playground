@@ -1,6 +1,6 @@
 # Demo Spring Project with Gradle Kotlin DSL build scripts
 
-Recent project version: 1.0.0
+Recent project version: 1.0.1
 
 ## Building
 
