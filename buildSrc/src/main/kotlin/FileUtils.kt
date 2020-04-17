@@ -1,10 +1,6 @@
 import java.io.File
 
-object FileUtils {
-
-    fun replaceString(file: File, regex: Regex, newString: String) {
-        val text = file.readText().replace(regex, newString)
-        file.writeText(text)
-    }
-
+fun File.replaceString(regex: Regex, newString: String) {
+    val text = this.readText().replace(regex, newString)
+    this.writeText(text)
 }
