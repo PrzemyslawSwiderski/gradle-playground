@@ -41,10 +41,15 @@ tasks {
         }
     }
 
-    named("afterReleaseBuild") {
+    val updateReadmeVersion by registering {
+        group = "release"
+
         doFirst {
             logger.info("Updating application version in README.md file")
             FileUtils.replaceString(file("$rootDir/README.md"), Regex("version: .*"), "version: $version")
         }
+    }
+    named("afterReleaseBuild") {
+        dependsOn(updateReadmeVersion)
     }
 }
