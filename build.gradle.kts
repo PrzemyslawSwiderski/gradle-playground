@@ -42,7 +42,7 @@ tasks {
 
         doFirst {
             logger.info("Updating application version in README.md file")
-            file("$rootDir/README.md").replaceString(Regex("version: .*"), "version: $version")
+            file(projectDir).resolve("README.md").replaceString(Regex("version: .*"), "version: $version")
         }
     }
     named("afterReleaseBuild") {
