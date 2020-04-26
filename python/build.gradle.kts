@@ -26,9 +26,7 @@ envs {
     python("python-3.8.2", "3.8.2")
     virtualenv("virtualenv-3.8.2", "python-3.8.2")
 }
-//tasks.named("build_envs") {
-//    dependsOn("addPythonEnvsToIgnore")
-//}
+
 tasks {
     build {
         dependsOn("build_envs")
@@ -62,30 +60,33 @@ tasks {
         dependsOn("build_envs")
     }
 
-//    val addPythonEnvsToIgnore = registering {
-    register("addPythonEnvsToIgnore") {
-        group = "python"
-        doFirst {
-            val tasks = tasks
-            val gitignore = file(projectDir).resolve(".gitignore").also { it.createNewFile() }
-            if (gitignore.readLines().none { it.contains(pythonEnvsDirName) })
-                gitignore.writeText(pythonEnvsDirName)
+    afterEvaluate {
+        val addPythonEnvsToIgnore by registering {
+            group = "python"
+            doFirst {
+                val gitignore = file(projectDir).resolve(".gitignore").also { it.createNewFile() }
+                if (gitignore.readLines().none { it.contains(pythonEnvsDirName) })
+                    gitignore.writeText(pythonEnvsDirName)
+            }
+        }
+        "build_envs" {
+            dependsOn(addPythonEnvsToIgnore)
         }
     }
 }
 
 fun com.jetbrains.python.envs.PythonEnvsExtension.pythonPath(): String {
-    val path = this.virtualEnvs.first().envDir.absolutePath
+    val path = this.virtualEnvs.first().envDir
     return if (Os.isFamily(Os.FAMILY_WINDOWS))
-        "$path\\Scripts\\python.exe"
+        path.resolve("Scripts").resolve("python.exe").absolutePath
     else
-        "$path\\Scripts\\python"
+        path.resolve("bin").resolve("python").absolutePath
 }
 
 fun com.jetbrains.python.envs.PythonEnvsExtension.pipPath(): String {
-    val path = this.virtualEnvs.first().envDir.absolutePath
+    val path = this.virtualEnvs.first().envDir
     return if (Os.isFamily(Os.FAMILY_WINDOWS))
-        "$path\\Scripts\\pip.exe"
+        path.resolve("Scripts").resolve("pip.exe").absolutePath
     else
-        "$path\\Scripts\\pip"
+        path.resolve("bin").resolve("pip").absolutePath
 }
