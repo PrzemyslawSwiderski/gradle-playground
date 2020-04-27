@@ -23,7 +23,7 @@ envs {
     bootstrapDirectory = file(pythonBuildDir).resolve("bootstrap")
     envsDirectory = file(pythonBuildDir).resolve("envs")
 
-    python("python-3.8.2", "3.8.2")
+    python("python-3.8.2", "3.8.2") // additional modules like openssl or lzma can be needed on Linux system
     virtualenv("virtualenv-3.8.2", "python-3.8.2")
 }
 
@@ -58,6 +58,13 @@ tasks {
         args("install", "-r", "requirements.txt")
 
         dependsOn("build_envs")
+    }
+
+    register("pythonClean") {
+        group = "python"
+        doFirst {
+            delete(pythonBuildDir)
+        }
     }
 
     afterEvaluate {
